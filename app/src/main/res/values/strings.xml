@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Android Internship Assignment</string>
+    <string name="hint_edit_search">what do you search for?</string>
+    <string name="logo">logo</string>
+</resources>
