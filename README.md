@@ -2,7 +2,7 @@
 Show a list of cities in a RecyclerView from a JSON file and implement a search functionality to find a city within the list.
 
 ### **note:-** 
-+ ######## Explain the steps of the Binary Search Algorithm and provide a comparison between Binary Prefix Search and Linear Search as implemented in the file domain/usecases/SearchInteractor and comments.
++ ###### Explain the steps of the Binary Search Algorithm and provide a comparison between Binary Prefix Search and Linear Search as implemented in the file domain/usecases/SearchInteractor and comments.
 
 ## **Topics**
 + ##### Clean Architecture
