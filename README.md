@@ -1,0 +1,16 @@
+# **Android-Internship-Assignment**
+Show a list of cities in a RecyclerView from a JSON file and implement a search functionality to find a city within the list.
+
+## **Topics**
++ ##### Clean Architecture
++ ##### Dependancy Injection using Hilt
++ ##### Kotlin Coroutines
++ ##### Kotlin Flows
++ ##### Repository Pattern
++ ##### MVVM
++ ##### DataBinding
++ ##### Recycler View
++ ##### Binary Search Algorithm
+ 
+## **Images**
+![Android Internship Assignment](https://github.com/user-attachments/assets/c303b4bb-620c-41a2-a7f0-ae0cbb1891e5)
