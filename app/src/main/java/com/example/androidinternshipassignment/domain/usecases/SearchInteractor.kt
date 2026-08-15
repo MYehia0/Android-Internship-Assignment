@@ -1,21 +1,26 @@
 package com.example.androidinternshipassignment.domain.usecases
 
-import com.example.androidinternshipassignment.data.repositories.CityRepository
-import com.example.androidinternshipassignment.domain.mapper.CityMapper
 import com.example.androidinternshipassignment.domain.models.City
+import com.example.androidinternshipassignment.domain.repositories.CityRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SearchInteractor @Inject constructor(private val cityRepository: CityRepository, private val cityMapper: CityMapper) {
+class SearchInteractor @Inject constructor(private val cityRepository: CityRepository) {
 
-    suspend operator fun invoke(query: String): List<City> =
-        if (query.isBlank() || query.isEmpty()) {
-            cityRepository.getCitiesFromMemory().map { cityMapper.map(it) }
-        } else {
-            binaryPrefixSearch(
-                cityRepository.getCitiesFromMemory().map { cityMapper.map(it) },
-                query
-            )
+    suspend operator fun invoke(query: String): List<City> {
+        return withContext(Dispatchers.Default) {
+            val cities = cityRepository.getCitiesFromMemory()
+
+            if (cities.isEmpty()) return@withContext emptyList()
+
+            if (query.isBlank() || query.isEmpty()) {
+                cities
+            } else {
+                binaryPrefixSearch(cities, query)
+            }
         }
+    }
 
     private fun binaryPrefixSearch(list: List<City>, prefix: String): List<City> {
         val result = mutableListOf<City>()

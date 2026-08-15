@@ -13,11 +13,13 @@ import javax.inject.Inject
 class CitiesFileDataSource @Inject constructor (private val context: Context) {
     suspend fun fetchCitiesFromFile(): List<CityDto> {
         return withContext(Dispatchers.IO) {
-            val jsonFile = context.assets.open(Constants.JSON_FILE_NAME)
-            val reader = InputStreamReader(jsonFile)
-            val cityListType = object : TypeToken<List<CityDto>>() {}.type
-            val cityList: List<CityDto> = Gson().fromJson(reader, cityListType)
-            cityList.sortedWith(compareBy<CityDto> { it.name }.thenBy { it.country })
+            context.assets.open(Constants.JSON_FILE_NAME).use { jsonFile ->
+                InputStreamReader(jsonFile).use { reader ->
+                    val cityListType = object : TypeToken<List<CityDto>>() {}.type
+                    val cityList: List<CityDto> = Gson().fromJson(reader, cityListType) ?: emptyList()
+                    cityList.sortedWith(compareBy<CityDto> { it.name }.thenBy { it.country })
+                }
+            }
         }
     }
 }

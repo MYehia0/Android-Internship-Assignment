@@ -10,5 +10,5 @@ import dagger.hilt.android.components.ActivityComponent
 @InstallIn(ActivityComponent::class)
 class DiForUi {
     @Provides
-    fun provideCitiesAdapter() = CitiesAdapter(emptyList())
+    fun provideCitiesAdapter() = CitiesAdapter()
 }

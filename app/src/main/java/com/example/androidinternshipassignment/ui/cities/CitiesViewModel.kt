@@ -34,7 +34,8 @@ class CitiesViewModel @Inject constructor(
                 _uiState.update { old ->
                     old.copy(
                         searchResult = getCitiesInteractor(),
-                        isLoading = false
+                        isLoading = false,
+                        errors = null
                     )
                 }
             } catch (ex: Exception) {
@@ -50,11 +51,13 @@ class CitiesViewModel @Inject constructor(
 
     fun searchCities(query: String) {
         viewModelScope.launch {
+            _uiState.update { old -> old.copy(isLoading = true) }
             try {
                 _uiState.update { old ->
                     old.copy(
                         searchResult = searchInteractor(query),
-                        isLoading = false
+                        isLoading = false,
+                        errors = null
                     )
                 }
             } catch (ex: Exception) {

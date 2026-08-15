@@ -8,44 +8,72 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.androidinternshipassignment.R
 import com.example.androidinternshipassignment.databinding.ActivityCitiesBinding
 import com.example.androidinternshipassignment.domain.models.City
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @AndroidEntryPoint
+@OptIn(FlowPreview::class)
 class CitiesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCitiesBinding
     private val viewModel: CitiesViewModel by viewModels()
     @Inject lateinit var adapter: CitiesAdapter
+    private val searchQueryFlow = MutableStateFlow("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cities)
+
         initializeAdapter()
         handleScreenState()
-        binding.content.searchEditText.addTextChangedListener{
-            viewModel.searchCities(it.toString())
-        }
+        setupSearchDebounce()
+
         binding.content.tryAgain.setOnClickListener {
             viewModel.loadCities()
         }
     }
 
+    private fun setupSearchDebounce() {
+        binding.content.searchEditText.addTextChangedListener {
+            searchQueryFlow.value = it.toString()
+//            viewModel.searchCities(it.toString())
+        }
+
+        lifecycleScope.launch {
+            searchQueryFlow
+                .debounce(300L.milliseconds)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    viewModel.searchCities(query)
+                }
+        }
+    }
+
     private fun handleScreenState(){
         lifecycleScope.launch {
-            viewModel.uiState.collect {
-                showLoadingLayout(it.isLoading)
-                if (it.isLoading) {
-                    hideErrorLayout()
-                } else {
-                    if (it.errors.equals(null)) {
-                        adapter.changeData(it.searchResult)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect {
+                    showLoadingLayout(it.isLoading)
+                    if (it.isLoading) {
+                        hideErrorLayout()
                     } else {
-                        showErrorLayout(it.errors)
+                        if (it.errors == null) {
+                            adapter.submitList(it.searchResult)
+                        } else {
+                            showErrorLayout(it.errors)
+                        }
                     }
                 }
             }

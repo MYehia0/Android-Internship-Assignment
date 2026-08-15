@@ -1,4 +1,4 @@
-package com.example.androidinternshipassignment.domain.mapper
+package com.example.androidinternshipassignment.data.mapper
 
 import com.example.androidinternshipassignment.data.datasources.models.CityDto
 import com.example.androidinternshipassignment.domain.models.City
