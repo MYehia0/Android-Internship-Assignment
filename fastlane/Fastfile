@@ -1,0 +1,15 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build debug APK and upload to Firebase App Distribution"
+  lane :deploy do
+    firebase_app_distribution(
+      app: ENV["FIREBASE_APP_ID"],
+      service_credentials_file: ENV["FIREBASE_SERVICE_ACCOUNT"],
+      groups: "testers",
+      release_notes: "Automated build via Fastlane — commit #{ENV['GITHUB_SHA']}",
+      android_artifact_type: "APK",
+      android_artifact_path: "app/build/outputs/apk/debug/app-debug.apk"
+    )
+  end
+end

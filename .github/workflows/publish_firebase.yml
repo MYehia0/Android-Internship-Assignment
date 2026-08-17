@@ -23,6 +23,12 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -44,11 +50,9 @@ jobs:
           name: debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Distribute to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
-          releaseNotes: "Automated build from GitHub Actions — commit ${{ github.sha }}"
+      - name: Deploy to Firebase App Distribution via Fastlane
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: bundle exec fastlane android deploy
