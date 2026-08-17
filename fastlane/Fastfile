@@ -1,5 +1,6 @@
 default_platform(:android)
 
+# Build debug APK and upload to Firebase App Distribution
 platform :android do
   desc "Build debug APK and upload to Firebase App Distribution"
   lane :deploy do
