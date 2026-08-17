@@ -35,6 +35,9 @@ jobs:
       - name: Decode google-services.json
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
 
+      - name: Decode Firebase service account
+        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" | base64 --decode > firebase-service-account.json
+
       - name: Run Lint
         run: ./gradlew lint
 
@@ -53,6 +56,5 @@ jobs:
       - name: Deploy to Firebase App Distribution via Fastlane
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           GITHUB_SHA: ${{ github.sha }}
         run: bundle exec fastlane android deploy

@@ -5,7 +5,7 @@ platform :android do
   lane :deploy do
     firebase_app_distribution(
       app: ENV["FIREBASE_APP_ID"],
-      service_credentials_file: ENV["FIREBASE_SERVICE_ACCOUNT"],
+      service_credentials_file: "firebase-service-account.json",
       groups: "testers",
       release_notes: "Automated build via Fastlane — commit #{ENV['GITHUB_SHA']}",
       android_artifact_type: "APK",
